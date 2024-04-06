@@ -8,13 +8,19 @@ def nothing(x):
 
 cv2.namedWindow('marking')
 
-cv2.createTrackbar('H Lower','marking',0,179,nothing)
-cv2.createTrackbar('H Higher','marking',179,179,nothing)
-cv2.createTrackbar('S Lower','marking',0,255,nothing)
-cv2.createTrackbar('S Higher','marking',255,255,nothing)
-cv2.createTrackbar('V Lower','marking',0,255,nothing)
-cv2.createTrackbar('V Higher','marking',255,255,nothing)
+# cv2.createTrackbar('H Lower','marking',0,179,nothing)
+# cv2.createTrackbar('H Higher','marking',179,179,nothing)
+# cv2.createTrackbar('S Lower','marking',0,255,nothing)
+# cv2.createTrackbar('S Higher','marking',255,255,nothing)
+# cv2.createTrackbar('V Lower','marking',0,255,nothing)
+# cv2.createTrackbar('V Higher','marking',255,255,nothing)
 
+cv2.createTrackbar('H Lower','marking',0,179,nothing)
+cv2.createTrackbar('S Lower','marking',0,255,nothing)
+cv2.createTrackbar('V Lower','marking',0,255,nothing)
+cv2.createTrackbar('H Higher','marking',179,179,nothing)
+cv2.createTrackbar('S Higher','marking',255,255,nothing)
+cv2.createTrackbar('V Higher','marking',255,255,nothing)
 
 while(1):
     _,img = camera.read()
