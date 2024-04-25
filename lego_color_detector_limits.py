@@ -1,6 +1,15 @@
 import numpy as np
+import pandas as pd
 import cv2
 from PIL import Image #para a obtenção das bordas de caixa
+import matplotlib.pyplot as plt
+from matplotlib import animation
+#import matplotlib.gridspec as gridspec
+#from drawnow import *
+
+array_colors_h = [0, 0, 0, 0]
+array_colors = ['r', 'g', 'y', 'b']
+#colors = ['r', 'g', 'y', 'b']
 
 def get_limits(color):
     c = np.uint8([[color]])
@@ -23,20 +32,34 @@ def padronizar_imagem_hsv(frame):
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     frame = cv2.resize(frame, (500, 400))
     return frame
+def plotar_grafico(colors, heights):
+    df = pd.DataFrame(heights, index=colors)
+    fig, ax = plt.subplots(figsize=(8, 4))
+    #ax = fig.add_axes([0, 0, 1, 1])
+    #ax.plot(df)
+    ax.bar(colors, heights, width=0.5, color=array_colors)
+    ax.grid()
+    ax.set_title('Lego dimensions', fontsize=20)
+    ax.set_ylabel('Height', fontsize=14)
+    ax.set_xlabel('Color', fontsize=14)
+    ax.set_frame_on(False)
+    ax.tick_params(axis='both', which='both', length=0)
+    #ax.legend(['Heights'], loc = 'lower right', fontsize=15)
+    plt.show()
 
-yellow = [0, 255, 255] #amarelo em BGR colorspace
-green = [0, 128, 0] #verde em BGR colorspace
-red = [0, 0, 255] #vermelho em BGR
-blue = [255, 0, 0] #vermelho em BGR
+# yellow = [0, 255, 255] #amarelo em BGR colorspace
+# green = [0, 128, 0] #verde em BGR colorspace
+# red = [0, 0, 255] #vermelho em BGR
+# blue = [255, 0, 0] #vermelho em BGR
 
-lower_range_r = np.array([0, 168, 49])
-upper_range_r = np.array([46, 255, 172])
-lower_range_g = np.array([41, 113, 43])
-upper_range_g = np.array([90, 255, 78])
-lower_range_y = np.array([24, 193, 85])
-upper_range_y = np.array([37, 255, 255])
-lower_range_b = np.array([104,255,109])
-upper_range_b = np.array([129,255,255])
+lower_range_r = np.array([0, 156, 102])
+upper_range_r = np.array([10, 255, 255])
+lower_range_g = np.array([46, 102, 59])
+upper_range_g = np.array([85, 255, 76])
+lower_range_y = np.array([24, 215, 108])
+upper_range_y = np.array([61, 255, 255])
+lower_range_b = np.array([100,200,125])
+upper_range_b = np.array([118,255,199])
 
 video = cv2.VideoCapture(0)
 #video.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
@@ -126,6 +149,8 @@ try:
                     h = y2 - y1
                     object_width = w / pixel_cm_ratio
                     object_height = h / pixel_cm_ratio
+                    
+                    array_colors_h[0] = float(object_height)
 
                     cv2.putText(frame, "W {} cm".format(round(object_width, 1)), (int(x1), int(y1 - 30)),
                                     cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
@@ -143,6 +168,8 @@ try:
                     h = y2 - y1
                     object_width = w / pixel_cm_ratio
                     object_height = h / pixel_cm_ratio
+                    
+                    array_colors_h[1] = float(object_height)
 
                     cv2.putText(frame, "W {} cm".format(round(object_width, 1)), (int(x1), int(y1 - 30)),
                                 cv2.FONT_HERSHEY_PLAIN, 1, (0, 128, 0), 2)
@@ -160,6 +187,8 @@ try:
                     h = y2 - y1
                     object_width = w / pixel_cm_ratio
                     object_height = h / pixel_cm_ratio
+                    
+                    array_colors_h[2] = float(object_height)
 
                     cv2.putText(frame, "W {} cm".format(round(object_width, 1)), (int(x1), int(y1 - 30)),
                                 cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 255), 2)
@@ -177,6 +206,8 @@ try:
                     h = y2 - y1
                     object_width = w / pixel_cm_ratio
                     object_height = h / pixel_cm_ratio
+                    
+                    array_colors_h[3] = float(object_height)
 
                     cv2.putText(frame, "W {} cm".format(round(object_width, 1)), (int(x1), int(y1 - 30)),
                                 cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)
@@ -255,14 +286,21 @@ try:
 
             #     # print(object_width)
             #     # print(object_height)
+            
+            # if (array_colors_h[2]):
+            #     plotar_grafico(array_colors, array_colors_h)
+                #anim = animation.FuncAnimation(plotar_grafico, interval = 1000)
 
             cv2.imshow("Video da Webcam", frame)
             #cv2.imshow("Video da Webcam", mask_r)
                 #exibir_video(frame)
             key = cv2.waitKey(1)
             if key == 27:
+                # if (array_colors_h[2]):
+                #     plotar_grafico(array_colors, array_colors_h)
+                plotar_grafico(array_colors, array_colors_h)
                 break
-     
+                
 except KeyboardInterrupt:
     video.release()
     cv2.destroyAllWindows()
