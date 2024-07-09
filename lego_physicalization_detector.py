@@ -29,12 +29,20 @@ def plotar_grafico(colors, heights):
     ax.tick_params(axis='both', which='both', length=0)
     plt.show()
 
-video = cv2.VideoCapture(0)
+#Utilizando a câmera do smartphone e o App IP Webcan
+
+ip = "https:/192.168.0.26:8080/video"
+
+video = cv2.VideoCapture()
+
+video.open(ip)
 
 try:
     while(True):
         captura_ok, frame = video.read()
         if captura_ok:
+            
+            frame = cv2.resize(frame, (800, 400))
             
             hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
             
