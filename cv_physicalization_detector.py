@@ -12,10 +12,10 @@ lower_range_r = np.array([0, 69, 59])
 upper_range_r = np.array([5, 255, 255])
 lower_range_g = np.array([52, 68, 66])
 upper_range_g = np.array([82, 255, 255])
-lower_range_y = np.array([0, 35, 109])
-upper_range_y = np.array([97, 255, 255])
 lower_range_b = np.array([69,45,99])
 upper_range_b = np.array([179,255,255])
+lower_range_y = np.array([0, 35, 109])
+upper_range_y = np.array([97, 255, 255])
 
 def plotar_grafico(colors, heights):
     df = pd.DataFrame(heights, index=colors)
@@ -32,6 +32,7 @@ def plotar_grafico(colors, heights):
 #Utilizando a câmera do smartphone e o App IP Webcan
 
 ip = "https:/192.168.0.26:8080/video"
+#ip = "https:/192.168.0.101:8080/video"
 
 video = cv2.VideoCapture()
 
@@ -165,7 +166,7 @@ try:
             cv2.imshow("Video da Webcam", frame)
             
             key = cv2.waitKey(1)
-            if key == 27:
+            if key == 27: #Esc
                 plotar_grafico(array_colors, array_colors_h)
                 break
                 

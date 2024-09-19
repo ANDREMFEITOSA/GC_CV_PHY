@@ -1,27 +1,20 @@
 import cv2
 import numpy as np
 
-#video = cv2.VideoCapture(0)
+video = cv2.VideoCapture(0)
 
 #Utilizando a câmera do smartphone e o App IP Webcan
 
-ip = "https:/192.168.0.26:8080/video"
+#ip = "https:/192.168.0.26:8080/video"
 
-video = cv2.VideoCapture()
+#video = cv2.VideoCapture()
 
-video.open(ip)
+#video.open(ip)
 
 def nothing(x):
     pass
 
 cv2.namedWindow('marking')
-
-# cv2.createTrackbar('H Lower','marking',0,179,nothing)
-# cv2.createTrackbar('H Higher','marking',179,179,nothing)
-# cv2.createTrackbar('S Lower','marking',0,255,nothing)
-# cv2.createTrackbar('S Higher','marking',255,255,nothing)
-# cv2.createTrackbar('V Lower','marking',0,255,nothing)
-# cv2.createTrackbar('V Higher','marking',255,255,nothing)
 
 cv2.createTrackbar('H Lower','marking',0,179,nothing)
 cv2.createTrackbar('S Lower','marking',0,255,nothing)
@@ -33,7 +26,6 @@ cv2.createTrackbar('V Higher','marking',255,255,nothing)
 while(1):
     _,img = video.read()
     img = cv2.flip(img,1)
-    
     img = cv2.resize(img, (300, 500))
 
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -57,10 +49,9 @@ while(1):
 
     res1=cv2.bitwise_and(img, img, mask = red)
 
-
     cv2.imshow("Masking ",res1)
 
-    if cv2.waitKey(10) & 0xFF == ord('q'):
+    if cv2.waitKey(10) & 0xFF == ord('q'): #Enter
         video.release()
         cv2.destroyAllWindows()
         break
