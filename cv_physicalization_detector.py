@@ -20,13 +20,14 @@ upper_range_y = np.array([97, 255, 255])
 def plotar_grafico(colors, heights):
     df = pd.DataFrame(heights, index=colors)
     fig, ax = plt.subplots(figsize=(7, 5))
-    ax.bar(colors, heights, width=0.5, color=array_colors)
+    g = ax.bar(colors, heights, width=0.5, color=array_colors)
     ax.grid()
-    ax.set_title('Bar dimensions', fontsize=20)
-    ax.set_ylabel('Height', fontsize=14)
+    ax.set_title('Bar Height x Color', fontsize=20)
+    ax.set_ylabel('Height (cm)', fontsize=14)
     ax.set_xlabel('Color', fontsize=14)
     ax.set_frame_on(False)
     ax.tick_params(axis='both', which='both', length=0)
+    ax.bar_label(g, padding = 3)
     plt.show()
 
 #Utilizando a câmera do smartphone e o App IP Webcan

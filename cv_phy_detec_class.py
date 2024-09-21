@@ -7,7 +7,7 @@ from matplotlib import animation
 
 array_colors_h = [0, 0, 0]
 
-array_colors = ['r', 'b', 'y']
+array_colors = ['Red', 'Blue', 'Yellow']
 
 lower_range_r = np.array([0, 0, 0])
 upper_range_r = np.array([0, 0, 0])
@@ -19,21 +19,22 @@ upper_range_y = np.array([0, 0, 0])
 def plotar_grafico(colors, heights):
     df = pd.DataFrame(heights, index=colors)
     fig, ax = plt.subplots(figsize=(7, 5))
-    ax.bar(colors, heights, width=0.5, color=array_colors)
+    g = ax.bar(colors, heights, width=0.25, color=array_colors)
     ax.grid()
-    ax.set_title('Bar dimensions', fontsize=20)
-    ax.set_ylabel('Height', fontsize=14)
+    ax.set_title('Bar Height x Color', fontsize=20)
+    ax.set_ylabel('Height (cm)', fontsize=14)
     ax.set_xlabel('Color', fontsize=14)
-    ax.set_frame_on(False)
+    ax.set_frame_on(True)
     ax.tick_params(axis='both', which='both', length=0)
+    ax.bar_label(g, fmt='{:,.2f}', padding = 3)
     plt.show()
 
 def nothing(x):
     pass
 
-def setup():
-    ip = "https:/192.168.0.26:8080/video"
-    #ip = "https:/192.168.0.100:8080/video"
+def setup_color():
+    #ip = "https:/192.168.0.26:8080/video"
+    ip = "https:/192.168.0.101:8080/video"
 
     video = cv2.VideoCapture()
 
@@ -41,14 +42,14 @@ def setup():
 
     ###
 
-    cv2.namedWindow('marking')
+    cv2.namedWindow('SETUP_COLOR')
 
-    cv2.createTrackbar('H Lower','marking',0,179,nothing)
-    cv2.createTrackbar('S Lower','marking',0,255,nothing)
-    cv2.createTrackbar('V Lower','marking',0,255,nothing)
-    cv2.createTrackbar('H Higher','marking',179,179,nothing)
-    cv2.createTrackbar('S Higher','marking',255,255,nothing)
-    cv2.createTrackbar('V Higher','marking',255,255,nothing)
+    cv2.createTrackbar('H Lower','SETUP_COLOR',0,179,nothing)
+    cv2.createTrackbar('S Lower','SETUP_COLOR',0,255,nothing)
+    cv2.createTrackbar('V Lower','SETUP_COLOR',0,255,nothing)
+    cv2.createTrackbar('H Higher','SETUP_COLOR',179,179,nothing)
+    cv2.createTrackbar('S Higher','SETUP_COLOR',255,255,nothing)
+    cv2.createTrackbar('V Higher','SETUP_COLOR',255,255,nothing)
 
     while(1):
         _,img = video.read()
@@ -57,12 +58,12 @@ def setup():
 
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
-        hL = cv2.getTrackbarPos('H Lower','marking')
-        hH = cv2.getTrackbarPos('H Higher','marking')
-        sL = cv2.getTrackbarPos('S Lower','marking')
-        sH = cv2.getTrackbarPos('S Higher','marking')
-        vL = cv2.getTrackbarPos('V Lower','marking')
-        vH = cv2.getTrackbarPos('V Higher','marking')
+        hL = cv2.getTrackbarPos('H Lower','SETUP_COLOR')
+        hH = cv2.getTrackbarPos('H Higher','SETUP_COLOR')
+        sL = cv2.getTrackbarPos('S Lower','SETUP_COLOR')
+        sH = cv2.getTrackbarPos('S Higher','SETUP_COLOR')
+        vL = cv2.getTrackbarPos('V Lower','SETUP_COLOR')
+        vH = cv2.getTrackbarPos('V Higher','SETUP_COLOR')
 
         lowerRegion = np.array([hL,sL,vL],np.uint8)
         upperRegion = np.array([hH,sH,vH],np.uint8)
@@ -76,7 +77,7 @@ def setup():
 
         res1=cv2.bitwise_and(img, img, mask = red)
 
-        cv2.imshow("Masking ",res1)
+        cv2.imshow("SETUP_COLOR",res1)
 
         if cv2.waitKey(10) & 0xFF == ord('q'): #Enter
             video.release()
@@ -84,15 +85,16 @@ def setup():
             break    
     return (lowerRegion, upperRegion)
 
-lower_range_r, upper_range_r = setup()
+lower_range_r, upper_range_r = setup_color()
 
-lower_range_b, upper_range_b = setup()
+lower_range_b, upper_range_b = setup_color()
 
-lower_range_y, upper_range_y = setup()
+lower_range_y, upper_range_y = setup_color()
 
 #Utilizando a câmera do smartphone e o App IP Webcan
 
-ip = "https:/192.168.0.26:8080/video"
+#ip = "https:/192.168.0.26:8080/video"
+ip = "https:/192.168.0.101:8080/video"
 
 video = cv2.VideoCapture()
 
@@ -162,9 +164,9 @@ try:
                     
                     array_colors_h[0] = float(object_height)
 
-                    cv2.putText(frame, "W {} cm".format(round(object_width, 1)), (int(x1), int(y1 - 30)),
-                                    cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
-                    cv2.putText(frame, "H {} cm".format(round(object_height, 1)), (int(x1), int(y1 - 15)),
+                    #cv2.putText(frame, "W {} cm".format(round(object_width, 1)), (int(x1), int(y1 - 30)),
+                    #                cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
+                    cv2.putText(frame, "{}".format(round(object_height, 2)), (int(x1), int(y1 - 15)),
                                     cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
 
                 if bbox_b is not None:
@@ -176,11 +178,11 @@ try:
                     object_width = w / pixel_cm_ratio
                     object_height = h / pixel_cm_ratio
                     
-                    array_colors_h[2] = float(object_height)
+                    array_colors_h[1] = float(object_height)
 
-                    cv2.putText(frame, "W {} cm".format(round(object_width, 1)), (int(x1), int(y1 - 30)),
-                                cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)
-                    cv2.putText(frame, "H {} cm".format(round(object_height, 1)), (int(x1), int(y1 - 15)),
+                    #cv2.putText(frame, "W {} cm".format(round(object_width, 1)), (int(x1), int(y1 - 30)),
+                    #            cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)
+                    cv2.putText(frame, "{}".format(round(object_height, 2)), (int(x1), int(y1 - 15)),
                                 cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)
                 
                 if bbox_y is not None:
@@ -192,11 +194,11 @@ try:
                     object_width = w / pixel_cm_ratio
                     object_height = h / pixel_cm_ratio
                     
-                    array_colors_h[3] = float(object_height)
+                    array_colors_h[2] = float(object_height)
 
-                    cv2.putText(frame, "W {} cm".format(round(object_width, 1)), (int(x1), int(y1 - 30)),
-                                cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 255), 2)
-                    cv2.putText(frame, "H {} cm".format(round(object_height, 1)), (int(x1), int(y1 - 15)),
+                    # cv2.putText(frame, "W {} cm".format(round(object_width, 1)), (int(x1), int(y1 - 30)),
+                    #             cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 255), 2)
+                    cv2.putText(frame, "{}".format(round(object_height, 2)), (int(x1), int(y1 - 15)),
                                 cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 255), 2)
                     
             cv2.imshow("Video da Webcam", frame)
