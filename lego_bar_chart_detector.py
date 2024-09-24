@@ -5,9 +5,11 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from matplotlib import animation
 
-array_colors_h = [0, 0, 0]
+array_colors_h = [0, 0, 0, 0]
 
-array_colors = ['Red', 'Blue', 'Yellow']
+array_colors = ['Red', 'Blue', 'Yellow', 'Orange']
+
+array_categories = ['A', 'B', 'C', 'D']
 
 lower_range_r = np.array([0, 0, 0])
 upper_range_r = np.array([0, 0, 0])
@@ -15,7 +17,10 @@ lower_range_b = np.array([0, 0, 0])
 upper_range_b = np.array([0, 0, 0])
 lower_range_y = np.array([0, 0, 0])
 upper_range_y = np.array([0, 0, 0])
+lower_range_o = np.array([0, 0, 0])
+upper_range_o = np.array([0, 0, 0])
 
+#Função para plotar gráfico tipo bar
 def plotar_grafico(colors, heights):
     df = pd.DataFrame(heights, index=colors)
     fig, ax = plt.subplots(figsize=(7, 5))
@@ -26,21 +31,40 @@ def plotar_grafico(colors, heights):
     ax.set_xlabel('Color', fontsize=14)
     ax.set_frame_on(True)
     ax.tick_params(axis='both', which='both', length=0)
-    ax.bar_label(g, fmt='{:,.2f}', padding = 3)
+    ax.bar_label(g, fmt='{:,.1f}', padding = 3)
+    plt.show()
+
+#Função para plotar gráfico tipo stacked bar
+def plotar_grafico_stacked(categories, heights, colors):
+    df = pd.DataFrame(heights, index=categories)
+    fig, ax = plt.subplots(figsize=(15, 5))
+    g_red = ax.bar(categories[0], heights[0], width=0.10, align='center', color=array_colors[0])
+    g_blue = ax.bar(categories[0], heights[1], width=0.10, bottom=heights[0], align='center', color=array_colors[1])
+    g_yellow = ax.bar(categories[1], heights[2], width=0.10, align='center', color=array_colors[2])
+    g_orange = ax.bar(categories[1], heights[3], width=0.10, bottom=heights[2], align='center', color=array_colors[3])
+    ax.grid()
+    ax.set_title('Stacked Bar', fontsize=20)
+    ax.set_ylabel('Height (cm)', fontsize=14)
+    ax.set_xlabel('Categoria', fontsize=14)
+    ax.set_frame_on(True)
+    ax.tick_params(axis='both', which='both', length=0)
+    ax.bar_label(g_red, fmt='{:,.1f}', label_type='center', padding = 3)
+    ax.bar_label(g_blue, fmt='{:,.1f}', label_type='center', padding = 3)
+    ax.bar_label(g_yellow, fmt='{:,.1f}', label_type='center', padding = 3)
+    ax.bar_label(g_orange, fmt='{:,.1f}', label_type='center', padding = 3)
     plt.show()
 
 def nothing(x):
     pass
 
+#Função para captura de intervalos de cores HSV
 def setup_color():
     #ip = "https:/192.168.0.26:8080/video"
-    ip = "https:/192.168.0.101:8080/video"
+    ip = "https:/192.168.121.127:8080/video"
 
     video = cv2.VideoCapture()
 
     video.open(ip)
-
-    ###
 
     cv2.namedWindow('SETUP_COLOR')
 
@@ -79,23 +103,38 @@ def setup_color():
 
         cv2.imshow("SETUP_COLOR",res1)
 
-        if cv2.waitKey(10) & 0xFF == ord('q'): #Enter
+        key = cv2.waitKey(1)
+
+        if key == 13: #Enter
             video.release()
             cv2.destroyAllWindows()
-            break    
+            break
+        
     return (lowerRegion, upperRegion)
 
-lower_range_r, upper_range_r = setup_color()
+#Captura dos intervalos de cores HSV
+# lower_range_r, upper_range_r = setup_color()
 
-lower_range_b, upper_range_b = setup_color()
+# lower_range_b, upper_range_b = setup_color()
 
-lower_range_y, upper_range_y = setup_color()
+# lower_range_y, upper_range_y = setup_color()
+
+# lower_range_o, upper_range_o = setup_color()
+
+lower_range_r = np.array([0, 218, 230])
+upper_range_r = np.array([6, 251, 255])
+lower_range_b = np.array([96,196, 198])
+upper_range_b = np.array([131,255,255])
+lower_range_y = np.array([18, 66, 246])
+upper_range_y = np.array([30, 128, 253])
+lower_range_o = np.array([13, 134, 255])
+upper_range_o = np.array([24, 182, 255])
 
 #Utilizando a câmera do smartphone e o App IP Webcan
-
 #ip = "https:/192.168.0.26:8080/video"
-ip = "https:/192.168.0.101:8080/video"
+ip = "https:/192.168.121.127:8080/video"
 
+#Algoritmo para detecção dos objetos e geração de gráficos digitais
 video = cv2.VideoCapture()
 
 video.open(ip)
@@ -109,7 +148,7 @@ try:
             
             hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
             
-            #
+            #Red
 
             mask_r = cv2.inRange(hsv_frame, lower_range_r, upper_range_r)
 
@@ -117,7 +156,7 @@ try:
 
             bbox_r = mask_border_r.getbbox()
 
-            #
+            #Blue
 
             mask_b = cv2.inRange(hsv_frame, lower_range_b, upper_range_b)
 
@@ -125,7 +164,7 @@ try:
 
             bbox_b = mask_border_b.getbbox()
             
-            #
+            #Yellow
             
             mask_y = cv2.inRange(hsv_frame, lower_range_y, upper_range_y)
 
@@ -133,7 +172,15 @@ try:
 
             bbox_y = mask_border_y.getbbox()
 
-            #
+            #Orange
+                         
+            mask_o = cv2.inRange(hsv_frame, lower_range_o, upper_range_o)
+
+            mask_border_o = Image.fromarray(mask_o)
+
+            bbox_o = mask_border_o.getbbox()
+
+            #Aruco detector
 
             dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_5X5_50)
             parameters = cv2.aruco.DetectorParameters()
@@ -147,7 +194,6 @@ try:
                 cv2.polylines(frame, int_corners, True, (0, 255, 0), 3)
 
                 # Aruco Perimeter
-                # A imagem capturada deve conter o QR Code para rodar
                 aruco_perimeter = cv2.arcLength(corners[0],True)
                 
                 # Pixel to cm ratio
@@ -162,11 +208,9 @@ try:
                     object_width = w / pixel_cm_ratio
                     object_height = h / pixel_cm_ratio
                     
-                    array_colors_h[0] = float(object_height)
+                    array_colors_h[0] = round(object_height - 0.18, 1) #Desconto da altura do pino da peça de lego
 
-                    #cv2.putText(frame, "W {} cm".format(round(object_width, 1)), (int(x1), int(y1 - 30)),
-                    #                cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
-                    cv2.putText(frame, "{}".format(round(object_height, 2)), (int(x1), int(y1 - 15)),
+                    cv2.putText(frame, "{}".format(round(object_height - 0.18, 1)), (int(x1), int(y1 - 15)),
                                     cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
 
                 if bbox_b is not None:
@@ -178,11 +222,9 @@ try:
                     object_width = w / pixel_cm_ratio
                     object_height = h / pixel_cm_ratio
                     
-                    array_colors_h[1] = float(object_height)
+                    array_colors_h[1] = round(object_height - 0.18, 1)
 
-                    #cv2.putText(frame, "W {} cm".format(round(object_width, 1)), (int(x1), int(y1 - 30)),
-                    #            cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)
-                    cv2.putText(frame, "{}".format(round(object_height, 2)), (int(x1), int(y1 - 15)),
+                    cv2.putText(frame, "{}".format(round(object_height - 0.18, 1)), (int(x1), int(y1 - 15)),
                                 cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 2)
                 
                 if bbox_y is not None:
@@ -194,18 +236,33 @@ try:
                     object_width = w / pixel_cm_ratio
                     object_height = h / pixel_cm_ratio
                     
-                    array_colors_h[2] = float(object_height)
+                    array_colors_h[2] = round(object_height - 0.18, 1)
 
-                    # cv2.putText(frame, "W {} cm".format(round(object_width, 1)), (int(x1), int(y1 - 30)),
-                    #             cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 255), 2)
-                    cv2.putText(frame, "{}".format(round(object_height, 2)), (int(x1), int(y1 - 15)),
+                    cv2.putText(frame, "{}".format(round(object_height - 0.18, 1)), (int(x1), int(y1 - 15)),
                                 cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 255), 2)
+                    
+                if bbox_o is not None:
+                    x1, y1, x2, y2 = bbox_o
+                    frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0,69,255), 2)
+
+                    w = x2 - x1
+                    h = y2 - y1
+                    object_width = w / pixel_cm_ratio
+                    object_height = h / pixel_cm_ratio
+                    
+                    array_colors_h[3] = round(object_height - 0.18, 1)
+
+                    cv2.putText(frame, "{}".format(round(object_height - 0.18, 1)), (int(x1), int(y1 - 15)),
+                                cv2.FONT_HERSHEY_PLAIN, 1, (0,69,255), 2)
                     
             cv2.imshow("Video da Webcam", frame)
             
             key = cv2.waitKey(1)
-            if key == 27: #Esc
+            if key == 49: #1
                 plotar_grafico(array_colors, array_colors_h)
+                break
+            if key == 50: #2
+                plotar_grafico_stacked(array_categories, array_colors_h, array_colors)
                 break
                 
 except KeyboardInterrupt:
