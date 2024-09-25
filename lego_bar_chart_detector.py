@@ -7,7 +7,7 @@ from matplotlib import animation
 
 array_colors_h = [0, 0, 0, 0]
 
-array_colors = ['Red', 'Blue', 'Yellow', 'Orange']
+array_colors = ['Red', 'Green', 'Blue', 'Yellow']
 
 array_categories = ['A', 'B', 'C', 'D']
 
@@ -23,7 +23,7 @@ upper_range_o = np.array([0, 0, 0])
 #Função para plotar gráfico tipo bar
 def plotar_grafico(colors, heights):
     df = pd.DataFrame(heights, index=colors)
-    fig, ax = plt.subplots(figsize=(7, 5))
+    fig, ax = plt.subplots(figsize=(5, 5))
     g = ax.bar(colors, heights, width=0.25, color=array_colors)
     ax.grid()
     ax.set_title('Bar Height x Color', fontsize=20)
@@ -37,7 +37,7 @@ def plotar_grafico(colors, heights):
 #Função para plotar gráfico tipo stacked bar
 def plotar_grafico_stacked(categories, heights, colors):
     df = pd.DataFrame(heights, index=categories)
-    fig, ax = plt.subplots(figsize=(15, 5))
+    fig, ax = plt.subplots(figsize=(5, 5))
     g_red = ax.bar(categories[0], heights[0], width=0.10, align='center', color=array_colors[0])
     g_blue = ax.bar(categories[0], heights[1], width=0.10, bottom=heights[0], align='center', color=array_colors[1])
     g_yellow = ax.bar(categories[1], heights[2], width=0.10, align='center', color=array_colors[2])
@@ -60,7 +60,7 @@ def nothing(x):
 #Função para captura de intervalos de cores HSV
 def setup_color():
     #ip = "https:/192.168.0.26:8080/video"
-    ip = "https:/192.168.121.127:8080/video"
+    ip = "https:/192.168.41.55:8080/video"
 
     video = cv2.VideoCapture()
 
@@ -113,26 +113,26 @@ def setup_color():
     return (lowerRegion, upperRegion)
 
 #Captura dos intervalos de cores HSV
-# lower_range_r, upper_range_r = setup_color()
+lower_range_r, upper_range_r = setup_color()
 
-# lower_range_b, upper_range_b = setup_color()
+lower_range_b, upper_range_b = setup_color()
 
-# lower_range_y, upper_range_y = setup_color()
+lower_range_y, upper_range_y = setup_color()
 
-# lower_range_o, upper_range_o = setup_color()
+lower_range_o, upper_range_o = setup_color()
 
-lower_range_r = np.array([0, 218, 230])
-upper_range_r = np.array([6, 251, 255])
-lower_range_b = np.array([96,196, 198])
-upper_range_b = np.array([131,255,255])
-lower_range_y = np.array([18, 66, 246])
-upper_range_y = np.array([30, 128, 253])
-lower_range_o = np.array([13, 134, 255])
-upper_range_o = np.array([24, 182, 255])
+# lower_range_r = np.array([0, 218, 230])
+# upper_range_r = np.array([6, 251, 255])
+# lower_range_b = np.array([96,196, 198])
+# upper_range_b = np.array([131,255,255])
+# lower_range_y = np.array([18, 66, 246])
+# upper_range_y = np.array([30, 128, 253])
+# lower_range_o = np.array([13, 134, 255])
+# upper_range_o = np.array([24, 182, 255])
 
 #Utilizando a câmera do smartphone e o App IP Webcan
 #ip = "https:/192.168.0.26:8080/video"
-ip = "https:/192.168.121.127:8080/video"
+ip = "https:/192.168.41.55:8080/video"
 
 #Algoritmo para detecção dos objetos e geração de gráficos digitais
 video = cv2.VideoCapture()
