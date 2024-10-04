@@ -1,57 +1,61 @@
 import cv2
 import numpy as np
 
-video = cv2.VideoCapture(0)
-
-#Utilizando a câmera do smartphone e o App IP Webcan
-
-#ip = "https:/192.168.0.26:8080/video"
-
-#video = cv2.VideoCapture()
-
-#video.open(ip)
-
+#Função auxiliar à função setup_color()
 def nothing(x):
     pass
 
-cv2.namedWindow('marking')
+#Função para captura de intervalos de cores HSV
+def setup_color(ip):
+    video = cv2.VideoCapture()
 
-cv2.createTrackbar('H Lower','marking',0,179,nothing)
-cv2.createTrackbar('S Lower','marking',0,255,nothing)
-cv2.createTrackbar('V Lower','marking',0,255,nothing)
-cv2.createTrackbar('H Higher','marking',179,179,nothing)
-cv2.createTrackbar('S Higher','marking',255,255,nothing)
-cv2.createTrackbar('V Higher','marking',255,255,nothing)
+    video.open(ip)
 
-while(1):
-    _,img = video.read()
-    img = cv2.flip(img,1)
-    img = cv2.resize(img, (300, 500))
+    cv2.namedWindow('SETUP_COLOR')
 
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    cv2.createTrackbar('H Lower','SETUP_COLOR',0,179,nothing)
+    cv2.createTrackbar('S Lower','SETUP_COLOR',0,255,nothing)
+    cv2.createTrackbar('V Lower','SETUP_COLOR',0,255,nothing)
+    cv2.createTrackbar('H Higher','SETUP_COLOR',179,179,nothing)
+    cv2.createTrackbar('S Higher','SETUP_COLOR',255,255,nothing)
+    cv2.createTrackbar('V Higher','SETUP_COLOR',255,255,nothing)
 
-    hL = cv2.getTrackbarPos('H Lower','marking')
-    hH = cv2.getTrackbarPos('H Higher','marking')
-    sL = cv2.getTrackbarPos('S Lower','marking')
-    sH = cv2.getTrackbarPos('S Higher','marking')
-    vL = cv2.getTrackbarPos('V Lower','marking')
-    vH = cv2.getTrackbarPos('V Higher','marking')
+    while(1):
+        _,img = video.read()
+        img = cv2.flip(img,1)
+        img = cv2.resize(img, (300, 500))
 
-    LowerRegion = np.array([hL,sL,vL],np.uint8)
-    upperRegion = np.array([hH,sH,vH],np.uint8)
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
-    redObject = cv2.inRange(hsv,LowerRegion,upperRegion)
+        hL = cv2.getTrackbarPos('H Lower','SETUP_COLOR')
+        hH = cv2.getTrackbarPos('H Higher','SETUP_COLOR')
+        sL = cv2.getTrackbarPos('S Lower','SETUP_COLOR')
+        sH = cv2.getTrackbarPos('S Higher','SETUP_COLOR')
+        vL = cv2.getTrackbarPos('V Lower','SETUP_COLOR')
+        vH = cv2.getTrackbarPos('V Higher','SETUP_COLOR')
 
-    kernal = np.ones((1,1),"uint8")
+        lower_region = np.array([hL,sL,vL],np.uint8)
+        upper_region = np.array([hH,sH,vH],np.uint8)
 
-    red = cv2.morphologyEx(redObject,cv2.MORPH_OPEN,kernal)
-    red = cv2.dilate(red,kernal,iterations=1)
+        redObject = cv2.inRange(hsv,lower_region,upper_region)
 
-    res1=cv2.bitwise_and(img, img, mask = red)
+        kernal = np.ones((1,1),"uint8")
 
-    cv2.imshow("Masking ",res1)
+        red = cv2.morphologyEx(redObject,cv2.MORPH_OPEN,kernal)
+        red = cv2.dilate(red,kernal,iterations=1)
 
-    if cv2.waitKey(10) & 0xFF == ord('q'): #Enter
-        video.release()
-        cv2.destroyAllWindows()
-        break
+        res1=cv2.bitwise_and(img, img, mask = red)
+
+        cv2.imshow("SETUP_COLOR",res1)
+
+        key = cv2.waitKey(1)
+
+        if key == 13: #Enter
+            video.release()
+            cv2.destroyAllWindows()
+            break
+        
+    return (lower_region, upper_region)
+
+# if(__name__ == "__main__"):
+#     setup_color()

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from scipy.spatial import distance as dist
 
-from object_detector import *
+from bar_detector import *
 
 from io import BytesIO
 from IPython.display import clear_output, Image, display
