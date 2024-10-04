@@ -56,6 +56,3 @@ def setup_color(ip):
             break
         
     return (lower_region, upper_region)
-
-# if(__name__ == "__main__"):
-#     setup_color()
