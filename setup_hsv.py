@@ -1,11 +1,11 @@
 import cv2
 import numpy as np
 
-#Função auxiliar à função setup_color()
+#Auxiliary function to the setup_color() function
 def nothing(x):
     pass
 
-#Função para captura de intervalos de cores HSV
+#Function for capturing HSV color ranges
 def setup_color(ip):
     video = cv2.VideoCapture()
 

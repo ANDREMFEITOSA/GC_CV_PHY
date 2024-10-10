@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-#Função para detectar barras
+#Function to detect bars
 def bar_detector(ip):
     
     video = cv2.VideoCapture()

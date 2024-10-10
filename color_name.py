@@ -7,7 +7,10 @@ def closest_color(requested_color):
         rd = (r_c - requested_color[0]) ** 2
         gd = (g_c - requested_color[1]) ** 2
         bd = (b_c - requested_color[2]) ** 2
-        min_colors[(rd + gd + bd)] = name
+        # rd = round((r_c - requested_color[0]) ** 2, 2)
+        # gd = round((g_c - requested_color[1]) ** 2, 2)
+        # bd = round((b_c - requested_color[2]) ** 2, 2)
+        min_colors[(rd + gd + bd)**1/2] = name
     return min_colors[min(min_colors.keys())]
 
 def get_color_name(rgb_tuple):
@@ -19,8 +22,3 @@ def get_color_name(rgb_tuple):
     except ValueError:
         # If exact match not found, find the closest color
         return closest_color(rgb_tuple)
-
-# # Unique example RGB value
-# unique_rgb = (123, 104, 238)  # An RGB value not directly named in CSS3 color names
-# color_name = get_color_name(unique_rgb)
-# print(f"The color name for RGB {unique_rgb} is {color_name}.")
