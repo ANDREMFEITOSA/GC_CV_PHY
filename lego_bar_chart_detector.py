@@ -7,7 +7,7 @@ from matplotlib import animation
 import colorsys
 import bar_detector
 import setup_hsv
-import plot_bar_charts
+import plot_graphs
 import color_name
 
 list_lower_hsv = []
@@ -135,9 +135,9 @@ if n > 0:
                     
                     #Generating digital graphics
                     #plot_bar_charts.plotar_graficos_(n, list_bar_color_name_, list_bar_h)
-                    plot_bar_charts.plotar_graficos_(n, list_bar_color_name, list_bar_h)
+                    #plot_bar_charts.plotar_graficos_(n, list_bar_color_name, list_bar_h)
+                    plot_graphs.plot_bar_pie_graphs(list_bar_h, list_bar_color_name_)
                     break
-                
     except KeyboardInterrupt:
         video.release()
         cv2.destroyAllWindows()

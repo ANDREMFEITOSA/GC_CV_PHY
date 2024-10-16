@@ -1,6 +1,27 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np 
+import numpy as np
+
+def func(pct, heights):
+    #absolute = int(np.round(pct/100.*np.sum(heights), 2))
+    absolute = np.round(pct/100.*np.sum(heights), 2)
+    return f"{pct:.1f}%\n({absolute:.1f} cm)"
+
+#Function to plot bar and pie graphs  
+def plot_bar_pie_graphs(heights, color_name):
+    fig, ax = plt.subplots(1, 2, figsize=(5, 5))
+    g = ax[0].bar(np.array(color_name), np.array(heights), width=0.25, color=np.array(color_name))
+    ax[0].grid()
+    ax[0].set_ylabel('Height (cm)', fontsize=14)
+    ax[0].set_xlabel('Color', fontsize=14)
+    ax[0].set_frame_on(True)
+    ax[0].tick_params(axis='both', which='both', length=0)
+    ax[0].bar_label(g, fmt='{:,.1f}', padding = 3)
+    
+    ax[1].pie(np.array(heights), labels=np.array(color_name), colors=np.array(color_name), autopct=lambda pct: func(pct, np.array(heights)))
+    ax[1].set_frame_on(True)
+
+    plt.show()
 
 #Function to plot bar graph
 def plotar_grafico_bar(colors_string, heights, colors):
@@ -66,7 +87,6 @@ def plotar_graficos(n_bars, rgb_string, heights, average_rgb):
     ax[1].tick_params(axis='both', which='both', length=0)
 
     plt.show()
-    
     
 def plotar_graficos_(n_bars, color_name, heights):
     fig, ax = plt.subplots(1, 2, figsize=(5, 5))

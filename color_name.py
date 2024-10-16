@@ -10,7 +10,8 @@ def closest_color(requested_color):
         # rd = round((r_c - requested_color[0]) ** 2, 2)
         # gd = round((g_c - requested_color[1]) ** 2, 2)
         # bd = round((b_c - requested_color[2]) ** 2, 2)
-        min_colors[(rd + gd + bd)**1/2] = name
+        # min_colors[(rd + gd + bd)**1/2] = name
+        min_colors[(rd + gd + bd)] = name
     return min_colors[min(min_colors.keys())]
 
 def get_color_name(rgb_tuple):
